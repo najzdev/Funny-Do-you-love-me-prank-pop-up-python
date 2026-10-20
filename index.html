@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Very Important Question</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --pink: #e91e63;
+      --dark: #880e4f;
+      --background: #ffe4ec;
+      --success: #4caf50;
+      --danger: #f44336;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: var(--background);
+      color: var(--dark);
+      font-family: "DejaVu Sans", Arial, sans-serif;
+    }
+
+    .card {
+      width: min(560px, calc(100vw - 32px));
+      padding: 28px 24px 34px;
+      text-align: center;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 14px 40px rgba(136, 14, 79, 0.15);
+    }
+
+    .emoji { font-size: 54px; line-height: 1; }
+    h1 { margin: 12px 0 8px; color: var(--pink); font-size: clamp(1.5rem, 5vw, 2rem); }
+    p { margin: 0 auto 24px; max-width: 460px; font-size: 1rem; font-style: italic; }
+
+    .arena {
+      position: relative;
+      height: 110px;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 24px;
+      color: white;
+      cursor: pointer;
+      font: 700 1rem "DejaVu Sans", Arial, sans-serif;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    button:hover { transform: scale(1.05); filter: brightness(0.92); }
+    .yes, .no { position: absolute; top: 50%; transform: translate(-50%, -50%); }
+    .yes:hover, .no:hover { transform: translate(-50%, -50%) scale(1.05); }
+    .yes { left: 25%; background: var(--success); }
+    .no { left: 75%; background: var(--danger); }
+
+    .success {
+      min-height: 100vh;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background: #fff0f5;
+    }
+
+    .success-card { position: relative; z-index: 1; }
+    .success-card .emoji { font-size: 64px; }
+    .success-card h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
+    .success-card p { font-style: normal; }
+    .close { background: var(--pink); }
+
+    .heart {
+      position: absolute;
+      top: -10vh;
+      animation: fall linear infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(120vh) rotate(20deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main id="app" class="card" aria-live="polite"></main>
+
+  <script>
+    const rejections = [
+      "Wrong answer. Try again 😤",
+      "Nope, that button is broken 🙃",
+      "Are you sure? Think harder 🥺",
+      "I'll pretend I didn't see that 😌",
+      "Come on... you can do better 💔",
+      "Still no? Bold of you 😏",
+      "This page is persistent, just like my love 💘"
+    ];
+    let attempts = 0;
+    const app = document.querySelector("#app");
+
+    function button(label, className, handler) {
+      const element = document.createElement("button");
+      element.className = className;
+      element.textContent = label;
+      element.addEventListener("click", handler);
+      return element;
+    }
+
+    function showLove() {
+      document.title = "A Very Important Question";
+      app.className = "card";
+      app.innerHTML = `
+        <div class="emoji" aria-hidden="true">💘</div>
+        <h1>Do you love me Niama? ❤️</h1>
+        <p>${attempts === 0 ? "Be honest... 👀" : rejections[(attempts - 1) % rejections.length]}</p>
+        <div class="arena"></div>
+      `;
+      const arena = app.querySelector(".arena");
+      arena.append(
+        button("Yes 💖", "yes", showDate),
+        button("No 💔", "no", () => { attempts++; showLove(); })
+      );
+    }
+
+    function showDate() {
+      document.title = "One More Thing...";
+      app.className = "card";
+      app.innerHTML = `
+        <div class="emoji" aria-hidden="true">🌹</div>
+        <h1>Will you go on a date with me?</h1>
+        <p>Say yes. Please. 🥺</p>
+        <div class="arena"></div>
+      `;
+      const arena = app.querySelector(".arena");
+      const yes = button("Yes 😍", "yes", showThanks);
+      const no = button("No 😢", "no", dodge);
+      arena.append(yes, no);
+
+      function dodge() {
+        const maxX = Math.max(0, arena.clientWidth - no.offsetWidth);
+        const maxY = Math.max(0, arena.clientHeight - no.offsetHeight);
+        no.style.left = `${Math.random() * maxX}px`;
+        no.style.top = `${Math.random() * maxY}px`;
+        no.style.transform = "none";
+      }
+
+      no.addEventListener("mouseenter", dodge);
+      no.addEventListener("touchstart", (event) => {
+        event.preventDefault();
+        dodge();
+      }, { passive: false });
+    }
+
+    function showThanks() {
+      document.title = "It's a Date! 💕";
+      app.className = "success";
+      app.innerHTML = `
+        <section class="success-card card">
+          <div class="emoji" aria-hidden="true">🌹</div>
+          <h1>Thanks babe!</h1>
+          <p>Can't wait for our date! 🌹✨</p>
+          <button class="close">Close 💋</button>
+        </section>
+      `;
+      app.querySelector(".close").addEventListener("click", showLove);
+      ["❤️", "💕", "💖", "🌹", "✨"].forEach((symbol) => {
+        for (let i = 0; i < 6; i++) {
+          const heart = document.createElement("span");
+          heart.className = "heart";
+          heart.textContent = symbol;
+          heart.style.left = `${Math.random() * 100}%`;
+          heart.style.fontSize = `${12 + Math.random() * 14}px`;
+          heart.style.animationDuration = `${4 + Math.random() * 6}s`;
+          heart.style.animationDelay = `${-Math.random() * 8}s`;
+          app.appendChild(heart);
+        }
+      });
+    }
+
+    showLove();
+  </script>
+</body>
+</html>
