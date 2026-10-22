@@ -4,14 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>A Very Important Question</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <style>
     :root {
       color-scheme: light;
-      --pink: #e91e63;
-      --dark: #880e4f;
-      --background: #ffe4ec;
-      --success: #4caf50;
-      --danger: #f44336;
+      --bg-1: #f7f8fc;
+      --bg-2: #eceff7;
+      --text: #111827;
+      --muted: #5e6676;
+      --stroke: rgba(255, 255, 255, 0.58);
+      --card-bg: rgba(255, 255, 255, 0.62);
+      --success: #34c759;
+      --danger: #ff3b30;
+      --primary: #0a84ff;
+      --accent: #ff2d55;
+      --shadow: 0 20px 45px rgba(16, 24, 40, 0.14);
+      --focus: rgba(10, 132, 255, 0.12);
+      --icon-bg: rgba(255, 45, 85, 0.14);
+    }
+
+    body.dark {
+      color-scheme: dark;
+      --bg-1: #0a0f1a;
+      --bg-2: #131a29;
+      --text: #eef2ff;
+      --muted: #b7c0d4;
+      --stroke: rgba(173, 190, 230, 0.18);
+      --card-bg: rgba(17, 24, 39, 0.56);
+      --success: #31d158;
+      --danger: #ff6961;
+      --primary: #4da3ff;
+      --accent: #ff6480;
+      --shadow: 0 24px 50px rgba(2, 6, 23, 0.46);
+      --focus: rgba(77, 163, 255, 0.2);
+      --icon-bg: rgba(255, 100, 128, 0.18);
     }
 
     * { box-sizing: border-box; }
@@ -22,62 +48,494 @@
       display: grid;
       place-items: center;
       overflow: hidden;
-      background: var(--background);
-      color: var(--dark);
-      font-family: "DejaVu Sans", Arial, sans-serif;
+      background:
+        radial-gradient(1200px 500px at 15% 0%, rgba(255, 45, 85, 0.16), transparent 60%),
+        radial-gradient(900px 420px at 85% 100%, rgba(10, 132, 255, 0.18), transparent 65%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+      font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      transition: background 260ms ease, color 260ms ease;
     }
 
     .card {
       width: min(560px, calc(100vw - 32px));
-      padding: 28px 24px 34px;
+      padding: 18px 26px 34px;
       text-align: center;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.55);
-      box-shadow: 0 14px 40px rgba(136, 14, 79, 0.15);
+      border-radius: 28px;
+      border: 1px solid var(--stroke);
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
     }
 
-    .emoji { font-size: 54px; line-height: 1; }
-    h1 { margin: 12px 0 8px; color: var(--pink); font-size: clamp(1.5rem, 5vw, 2rem); }
-    p { margin: 0 auto 24px; max-width: 460px; font-size: 1rem; font-style: italic; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(145deg, rgba(255, 45, 85, 0.18), rgba(10, 132, 255, 0.22));
+      color: var(--accent);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
+    }
+
+    .traffic {
+      display: flex;
+      gap: 5px;
+      margin-left: 8px;
+    }
+
+    .traffic span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .traffic span:nth-child(1) { background: #ff5f57; }
+    .traffic span:nth-child(2) { background: #febc2e; }
+    .traffic span:nth-child(3) { background: #28c840; }
+
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.35);
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform 140ms ease, background 140ms ease;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.08);
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: none;
+      filter: none;
+    }
+
+    .hero-icon {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      color: var(--accent);
+      background: var(--icon-bg);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 14px 24px rgba(255, 45, 85, 0.14);
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(1.5rem, 5vw, 2.05rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0 auto 24px;
+      max-width: 470px;
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .name-form {
+      display: grid;
+      gap: 12px;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .name-form input {
+      width: 100%;
+      border: 1px solid rgba(17, 24, 39, 0.14);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #111827;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    body.dark .name-form input {
+      background: rgba(17, 24, 39, 0.76);
+      color: #eef2ff;
+      border-color: rgba(173, 190, 230, 0.26);
+    }
+
+    .name-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--focus);
+    }
+
+    .name-form button {
+      width: 100%;
+      position: static;
+      transform: none;
+      background: linear-gradient(145deg, #0a84ff, #0066d6);
+    }
 
     .arena {
       position: relative;
-      height: 110px;
+      height: 118px;
       max-width: 460px;
       margin: 0 auto;
     }
 
     button {
       border: 0;
-      border-radius: 6px;
-      padding: 12px 24px;
-      color: white;
+      border-radius: 999px;
+      padding: 12px 22px;
+      color: #ffffff;
       cursor: pointer;
-      font: 700 1rem "DejaVu Sans", Arial, sans-serif;
-      transition: transform 120ms ease, filter 120ms ease;
+      font: 700 0.96rem/1 "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0.01em;
+      box-shadow: 0 10px 22px rgba(17, 24, 39, 0.18);
+      transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease;
     }
 
-    button:hover { transform: scale(1.05); filter: brightness(0.92); }
+    button:hover {
+      transform: scale(1.05);
+      filter: brightness(0.96);
+      box-shadow: 0 14px 24px rgba(17, 24, 39, 0.22);
+    }
+
+    .btn-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .yes, .no { position: absolute; top: 50%; transform: translate(-50%, -50%); }
     .yes:hover, .no:hover { transform: translate(-50%, -50%) scale(1.05); }
-    .yes { left: 25%; background: var(--success); }
-    .no { left: 75%; background: var(--danger); }
+    .yes { left: 25%; background: linear-gradient(145deg, #4cd964, #2eb34f); }
+    .no { left: 75%; background: linear-gradient(145deg, #ff6259, #ff3b30); }
 
     .success {
-      min-height: 100vh;
+      height: 100vh;
+      max-height: 100vh;
       width: 100%;
-      display: grid;
-      place-items: center;
+      display: block;
       position: relative;
-      overflow: hidden;
-      background: #fff0f5;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 22px 0 80px;
+      overscroll-behavior: contain;
+      background:
+        radial-gradient(600px 220px at 50% 100%, rgba(255, 45, 85, 0.12), transparent 75%),
+        transparent;
     }
 
-    .success-card { position: relative; z-index: 1; }
-    .success-card .emoji { font-size: 64px; }
-    .success-card h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
-    .success-card p { font-style: normal; }
-    .close { background: var(--pink); }
+    .success-stack {
+      width: min(760px, calc(100vw - 32px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .close { background: linear-gradient(145deg, #ff5c7a, #ff2d55); }
+
+    .letters-section {
+      width: 100%;
+      margin: 0 auto;
+      padding: 30px 24px 26px;
+      border: 1px solid var(--stroke);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      color: #6c2634;
+      font-family: inherit;
+    }
+
+    .letters-header {
+      max-width: 610px;
+      margin: 0 auto 26px;
+      text-align: center;
+    }
+
+    .letters-icon {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 15px;
+      border-radius: 20px;
+      color: #c94d62;
+      background: #fff1e7;
+      font-size: 1.55rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .letters-eyebrow {
+      margin: 0 0 8px;
+      color: #c94d62;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .letters-header h2 {
+      margin: 0 0 10px;
+      color: #1d1d1f;
+      font-size: clamp(1.65rem, 5vw, 2.35rem);
+      letter-spacing: -0.03em;
+    }
+
+    .letters-intro {
+      margin: 0 auto;
+      color: #6e6e73;
+      line-height: 1.65;
+    }
+
+    .letters-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .love-letter {
+      position: relative;
+      min-height: 230px;
+      cursor: pointer;
+      perspective: 900px;
+    }
+
+    .envelope {
+      position: relative;
+      min-height: 230px;
+      overflow: hidden;
+      border: 1px solid #e8c9ad;
+      border-radius: 7px;
+      background: #f8d9c7;
+      box-shadow: 3px 5px 0 rgba(124, 67, 49, 0.12), 0 14px 22px rgba(80, 40, 30, 0.12);
+      transition: transform 260ms ease, box-shadow 260ms ease;
+    }
+
+    .love-letter:nth-child(2) .envelope { background: #f8e5c5; transform: rotate(1deg); }
+    .love-letter:nth-child(3) .envelope { background: #f4d8df; transform: rotate(-0.8deg); }
+    .love-letter:nth-child(4) .envelope { background: #d9e7dc; transform: rotate(0.8deg); }
+
+    .love-letter:hover .envelope,
+    .love-letter:focus-visible .envelope {
+      transform: translateY(-7px) rotate(0deg);
+      box-shadow: 5px 16px 28px rgba(80, 40, 30, 0.2);
+    }
+
+    .envelope::before,
+    .envelope::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .envelope::before {
+      z-index: 3;
+      background: #e7bcae;
+      clip-path: polygon(0 0, 100% 0, 50% 56%);
+      transform-origin: top center;
+      transition: transform 500ms cubic-bezier(0.2, 0.75, 0.25, 1);
+    }
+
+    .envelope::after {
+      z-index: 2;
+      background: linear-gradient(145deg, transparent 49.5%, rgba(124, 67, 49, 0.16) 50%, transparent 50.5%);
+      opacity: 0.65;
+    }
+
+    .love-letter:nth-child(2) .envelope::before { background: #e8d09f; }
+    .love-letter:nth-child(3) .envelope::before { background: #dfb6c2; }
+    .love-letter:nth-child(4) .envelope::before { background: #b9d0be; }
+
+    .envelope-preview {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: grid;
+      place-content: center;
+      gap: 9px;
+      padding: 20px;
+      text-align: center;
+      color: #6c2634;
+      font-family: Georgia, "Times New Roman", serif;
+      transition: opacity 260ms ease, transform 260ms ease;
+    }
+
+    .envelope-preview i {
+      color: #c94d62;
+      font-size: 1.8rem;
+    }
+
+    .envelope-preview strong { font-size: 1.08rem; }
+    .envelope-preview span { color: #8b5960; font-size: 0.78rem; }
+
+    .letter-paper {
+      position: absolute;
+      inset: 14px;
+      z-index: 1;
+      overflow: auto;
+      padding: 26px 18px 18px;
+      border: 1px solid #e8c9ad;
+      border-radius: 3px;
+      background:
+        linear-gradient(90deg, rgba(133, 47, 63, 0.08) 1px, transparent 1px),
+        #fffaf0;
+      background-size: 100% 100%, 100% 100%;
+      color: #6c2634;
+      font-family: Georgia, "Times New Roman", serif;
+      opacity: 0;
+      transform: translateY(82px);
+      transition: opacity 300ms ease 180ms, transform 500ms cubic-bezier(0.2, 0.75, 0.25, 1) 120ms;
+    }
+
+    .love-letter.opened {
+      grid-column: 1 / -1;
+      min-height: 440px;
+      cursor: default;
+    }
+
+    .love-letter.opened .envelope {
+      min-height: 440px;
+      transform: none;
+      box-shadow: 5px 16px 28px rgba(80, 40, 30, 0.2);
+    }
+
+    .love-letter.opened .envelope::before {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .love-letter.opened .envelope-preview {
+      opacity: 0;
+      transform: translateY(-12px);
+      pointer-events: none;
+    }
+
+    .love-letter.opened .letter-paper {
+      opacity: 1;
+      transform: translateY(0);
+      z-index: 4;
+    }
+
+    .letter-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      color: #8b5960;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-topline span:first-child { color: #c94d62; }
+    .letter-topline i { margin-right: 5px; }
+
+    .letter-paper h3 {
+      margin: 0 0 14px;
+      color: #6c2634;
+      font-size: clamp(1.25rem, 4vw, 1.65rem);
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-paper p {
+      margin: 0 0 18px;
+      color: #6c2634;
+      line-height: 1.75;
+      max-width: none;
+      text-align: left;
+      font-style: normal;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-paper blockquote {
+      margin: 22px 0;
+      padding: 16px 18px;
+      border-left: 3px solid #c94d62;
+      border-radius: 0 14px 14px 0;
+      background: rgba(201, 77, 98, 0.08);
+      color: #6c2634;
+      font-size: 1.02rem;
+      font-style: italic;
+      line-height: 1.65;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    .love-letter:nth-child(2) {
+      background: #fffdf7;
+      transform: rotate(1deg);
+    }
+
+    .love-letter:nth-child(3) {
+      background: #fff1e7;
+      transform: rotate(-0.6deg);
+    }
+
+    .love-letter:nth-child(4) {
+      background: #fffaf0;
+      transform: rotate(0.8deg);
+    }
+
+    .screen-fade {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .screen-fade.fading-out {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      padding: 0 16px;
+      z-index: 2;
+    }
 
     .heart {
       position: absolute;
@@ -85,113 +543,378 @@
       animation: fall linear infinite;
       user-select: none;
       pointer-events: none;
+      color: var(--accent);
+      opacity: 0.85;
     }
 
     @keyframes fall {
       to { transform: translateY(120vh) rotate(20deg); }
     }
 
+    @keyframes letter-enter {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; }
+      .love-letter { animation: none; }
+    }
+
+    @media (max-width: 560px) {
+      .letters-section { padding: 28px 16px; }
+      .letters-grid { grid-template-columns: 1fr; }
+      .love-letter,
+      .envelope { min-height: 210px; }
+      .love-letter.opened,
+      .love-letter.opened .envelope { min-height: 470px; }
+      .letter-paper { inset: 10px; padding: 24px 14px 16px; }
+      .letter-topline {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+      }
     }
   </style>
 </head>
 <body>
-  <main id="app" class="card" aria-live="polite"></main>
+  <main id="app" class="card screen-fade" aria-live="polite"></main>
+  <footer class="footer">pro made with love for Anyone by Najz dev</footer>
 
   <script>
     const rejections = [
-      "Wrong answer. Try again 😤",
-      "Nope, that button is broken 🙃",
-      "Are you sure? Think harder 🥺",
-      "I'll pretend I didn't see that 😌",
-      "Come on... you can do better 💔",
-      "Still no? Bold of you 😏",
-      "This page is persistent, just like my love 💘"
+      "Wrong answer. Try again.",
+      "Nope, that button is broken.",
+      "Are you sure? Think harder.",
+      "I will pretend I did not see that.",
+      "Come on... you can do better.",
+      "Still no? Bold of you.",
+      "This page is persistent, just like my love."
     ];
+
     let attempts = 0;
+    let userName = "Niama";
+    let isDark = false;
     const app = document.querySelector("#app");
 
-    function button(label, className, handler) {
+    function topbar() {
+      const iconClass = isDark ? "fa-sun" : "fa-moon";
+      return `
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-logo"><i class="fa-solid fa-heart"></i></span>
+            <span>LoveOS</span>
+            <span class="traffic" aria-hidden="true"><span></span><span></span><span></span></span>
+          </div>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+            <i class="fa-solid ${iconClass}"></i>
+          </button>
+        </header>
+      `;
+    }
+
+    function button(label, className, icon, handler) {
       const element = document.createElement("button");
       element.className = className;
-      element.textContent = label;
+      element.innerHTML = `<span class="btn-content"><i class="fa-solid ${icon}"></i><span>${label}</span></span>`;
       element.addEventListener("click", handler);
       return element;
     }
 
-    function showLove() {
-      document.title = "A Very Important Question";
-      app.className = "card";
-      app.innerHTML = `
-        <div class="emoji" aria-hidden="true">💘</div>
-        <h1>Do you love me Niama? ❤️</h1>
-        <p>${attempts === 0 ? "Be honest... 👀" : rejections[(attempts - 1) % rejections.length]}</p>
-        <div class="arena"></div>
-      `;
-      const arena = app.querySelector(".arena");
-      arena.append(
-        button("Yes 💖", "yes", showDate),
-        button("No 💔", "no", () => { attempts++; showLove(); })
-      );
-    }
-
-    function showDate() {
-      document.title = "One More Thing...";
-      app.className = "card";
-      app.innerHTML = `
-        <div class="emoji" aria-hidden="true">🌹</div>
-        <h1>Will you go on a date with me?</h1>
-        <p>Say yes. Please. 🥺</p>
-        <div class="arena"></div>
-      `;
-      const arena = app.querySelector(".arena");
-      const yes = button("Yes 😍", "yes", showThanks);
-      const no = button("No 😢", "no", dodge);
-      arena.append(yes, no);
-
-      function dodge() {
-        const maxX = Math.max(0, arena.clientWidth - no.offsetWidth);
-        const maxY = Math.max(0, arena.clientHeight - no.offsetHeight);
-        no.style.left = `${Math.random() * maxX}px`;
-        no.style.top = `${Math.random() * maxY}px`;
-        no.style.transform = "none";
-      }
-
-      no.addEventListener("mouseenter", dodge);
-      no.addEventListener("touchstart", (event) => {
-        event.preventDefault();
-        dodge();
-      }, { passive: false });
-    }
-
-    function showThanks() {
-      document.title = "It's a Date! 💕";
-      app.className = "success";
-      app.innerHTML = `
-        <section class="success-card card">
-          <div class="emoji" aria-hidden="true">🌹</div>
-          <h1>Thanks babe!</h1>
-          <p>Can't wait for our date! 🌹✨</p>
-          <button class="close">Close 💋</button>
-        </section>
-      `;
-      app.querySelector(".close").addEventListener("click", showLove);
-      ["❤️", "💕", "💖", "🌹", "✨"].forEach((symbol) => {
-        for (let i = 0; i < 6; i++) {
-          const heart = document.createElement("span");
-          heart.className = "heart";
-          heart.textContent = symbol;
-          heart.style.left = `${Math.random() * 100}%`;
-          heart.style.fontSize = `${12 + Math.random() * 14}px`;
-          heart.style.animationDuration = `${4 + Math.random() * 6}s`;
-          heart.style.animationDelay = `${-Math.random() * 8}s`;
-          app.appendChild(heart);
+    function attachTopbar() {
+      const toggle = app.querySelector("#theme-toggle");
+      if (!toggle) return;
+      toggle.addEventListener("click", () => {
+        isDark = !isDark;
+        document.body.classList.toggle("dark", isDark);
+        const icon = toggle.querySelector("i");
+        if (icon) {
+          icon.className = `fa-solid ${isDark ? "fa-sun" : "fa-moon"}`;
         }
       });
     }
 
-    showLove();
+    function renderScreen(className, html, onReady) {
+      app.classList.add("fading-out");
+      window.setTimeout(() => {
+        app.className = `${className} screen-fade`;
+        app.innerHTML = `${topbar()}${html}`;
+        attachTopbar();
+        if (onReady) onReady();
+        requestAnimationFrame(() => {
+          app.classList.remove("fading-out");
+        });
+      }, 170);
+    }
+
+    function showNamePrompt() {
+      document.title = "One Quick Thing...";
+      renderScreen("card", `
+        <div class="hero-icon" aria-hidden="true"><i class="fa-solid fa-user"></i></div>
+        <h1>Before we start, what is your name?</h1>
+        <p>Tell me your name so I can make this moment personal.</p>
+        <form class="name-form" novalidate>
+          <input id="name-input" type="text" name="username" placeholder="Type your name" autocomplete="name" />
+          <button type="submit"><span class="btn-content"><i class="fa-solid fa-arrow-right"></i><span>Continue</span></span></button>
+        </form>
+      `, () => {
+        const form = app.querySelector(".name-form");
+        const input = app.querySelector("#name-input");
+        input.focus();
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const typedName = input.value.trim();
+          userName = typedName || "Niama";
+          attempts = 0;
+          showLove();
+        });
+      });
+    }
+
+    function showLove() {
+      document.title = "A Very Important Question";
+      renderScreen("card", `
+        <div class="hero-icon" aria-hidden="true"><i class="fa-solid fa-heart"></i></div>
+        <h1>Do you love me ${userName}?</h1>
+        <p>${attempts === 0 ? "Be honest..." : rejections[(attempts - 1) % rejections.length]}</p>
+        <div class="arena"></div>
+      `, () => {
+        const arena = app.querySelector(".arena");
+        arena.append(
+          button("Yes", "yes", "fa-check", showDate),
+          button("No", "no", "fa-xmark", () => {
+            attempts++;
+            showLove();
+          })
+        );
+      });
+    }
+
+    function showDate() {
+      document.title = "One More Thing...";
+      renderScreen("card", `
+        <div class="hero-icon" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></div>
+        <h1>Will you go on a date with me, ${userName}?</h1>
+        <p>Say yes. Please.</p>
+        <div class="arena"></div>
+      `, () => {
+        const arena = app.querySelector(".arena");
+        const yes = button("Yes", "yes", "fa-check", showThanks);
+        const no = button("No", "no", "fa-ban", dodge);
+        arena.append(yes, no);
+
+        function dodge() {
+          const maxX = Math.max(0, arena.clientWidth - no.offsetWidth);
+          const maxY = Math.max(0, arena.clientHeight - no.offsetHeight);
+          no.style.left = `${Math.random() * maxX}px`;
+          no.style.top = `${Math.random() * maxY}px`;
+          no.style.transform = "none";
+        }
+
+        no.addEventListener("mouseenter", dodge);
+        no.addEventListener("touchstart", (event) => {
+          event.preventDefault();
+          dodge();
+        }, { passive: false });
+      });
+    }
+
+    function initLettersSection() {
+      const letters = Array.from(app.querySelectorAll(".love-letter"));
+      letters.forEach((letter) => {
+        letter.setAttribute("tabindex", "0");
+        letter.setAttribute("role", "button");
+        letter.setAttribute("aria-expanded", "false");
+
+        function toggleLetter() {
+          const shouldOpen = !letter.classList.contains("opened");
+          letters.forEach((otherLetter) => {
+            otherLetter.classList.remove("opened");
+            otherLetter.setAttribute("aria-expanded", "false");
+          });
+          if (shouldOpen) {
+            letter.classList.add("opened");
+            letter.setAttribute("aria-expanded", "true");
+          }
+        }
+
+        letter.addEventListener("click", (event) => {
+          if (event.target.closest("a, button, .letter-paper")) return;
+          toggleLetter();
+        });
+
+        letter.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleLetter();
+          }
+        });
+      });
+    }
+
+    function showThanks() {
+      document.title = "It's a Date";
+      renderScreen("success", `
+        <div class="success-stack">
+          <section class="letters-section" id="letters">
+            <div class="letters-header">
+              <span class="letters-icon" aria-hidden="true">
+                <i class="fa-solid fa-gift"></i>
+              </span>
+              <p class="letters-eyebrow">A little something for ${userName}</p>
+              <h2>Thank you, ${userName}!</h2>
+              <p class="letters-intro">
+                Cannot wait for our date.
+                هذه رسائل صغيرة من القلب، لتذكّرك كم أنتِ مميزة ومحبوبة.
+                Keep shining — your presence makes every day warmer.
+              </p>
+            </div>
+
+            <div class="letters-grid">
+              <article class="love-letter active">
+                <div class="envelope">
+                  <div class="envelope-preview">
+                    <i class="fa-solid fa-envelope"></i>
+                    <strong>Open a little love</strong>
+                    <span>Tap to open</span>
+                  </div>
+                  <div class="letter-paper">
+                  <div class="letter-topline">
+                  <span><i class="fa-solid fa-heart"></i> Letter 01</span>
+                  <span>For ${userName}</span>
+                </div>
+                <h3>You make ordinary moments beautiful</h3>
+                <p>
+                  ${userName}, في حضورك تصبح التفاصيل الصغيرة أجمل، واللحظات العادية تصبح ذكريات لا تُنسى.
+                  You have a beautiful way of bringing warmth, kindness, and light wherever you go.
+                </p>
+                <blockquote>
+                  “You are not just loved for what you do, but for the beautiful person you are.”
+                </blockquote>
+                <p>
+                  لا تنسي أبداً أنكِ تستحقين كل الخير والفرح والنجاح.
+                  Keep believing in yourself — you are capable of more than you know.
+                </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="love-letter">
+                <div class="envelope">
+                  <div class="envelope-preview">
+                    <i class="fa-solid fa-envelope"></i>
+                    <strong>A note for your heart</strong>
+                    <span>Tap to read</span>
+                  </div>
+                  <div class="letter-paper">
+                  <div class="letter-topline">
+                  <span><i class="fa-solid fa-star"></i> Letter 02</span>
+                  <span>For your beautiful heart</span>
+                </div>
+                <h3>Never doubt your light</h3>
+                <p>
+                  يا ${userName}، حتى في الأيام الصعبة، يبقى في داخلك نور لا ينطفئ.
+                  Your strength is quiet, graceful, and powerful — even when you do not notice it.
+                </p>
+                <blockquote>
+                  “The world is softer, brighter, and kinder because you are in it.”
+                </blockquote>
+                <p>
+                  خذي وقتك، تنفسي، وواصلي التقدم خطوة بخطوة.
+                  You do not have to have everything figured out today. You are already doing wonderfully.
+                </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="love-letter">
+                <div class="envelope">
+                  <div class="envelope-preview">
+                    <i class="fa-solid fa-envelope"></i>
+                    <strong>A little encouragement</strong>
+                    <span>Tap to read</span>
+                  </div>
+                  <div class="letter-paper">
+                  <div class="letter-topline">
+                  <span><i class="fa-solid fa-sun"></i> Letter 03</span>
+                  <span>Always cheering for you</span>
+                </div>
+                <h3>Your dreams are worth fighting for</h3>
+                <p>
+                  أحلامكِ تستحق أن تُمنح الوقت والصبر والشجاعة.
+                  Every small step you take matters, and every effort is bringing you closer to the life you deserve.
+                </p>
+                <blockquote>
+                  “You are becoming someone your future self will be proud of.”
+                </blockquote>
+                <p>
+                  أنا فخور بكِ، وبكل مرة تختارين فيها الاستمرار رغم التعب.
+                  Keep going, ${userName}. Your story is still unfolding beautifully.
+                </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="love-letter">
+                <div class="envelope">
+                  <div class="envelope-preview">
+                    <i class="fa-solid fa-envelope"></i>
+                    <strong>With endless warmth</strong>
+                    <span>Tap to read</span>
+                  </div>
+                  <div class="letter-paper">
+                  <div class="letter-topline">
+                  <span><i class="fa-solid fa-infinity"></i> Letter 04</span>
+                  <span>With endless warmth</span>
+                </div>
+                <h3>You deserve a gentle kind of love</h3>
+                <p>
+                  ${userName}، أتمنى أن تحيطي نفسك دائماً بالأشخاص الذين يرون جمال قلبك ويقدّرون وجودك.
+                  You deserve love that feels safe, honest, peaceful, and full of encouragement.
+                </p>
+                <blockquote>
+                  “May you always be surrounded by people who remind you how special you are.”
+                </blockquote>
+                <p>
+                  تذكّري أنكِ لستِ وحدكِ أبداً.
+                  Wherever life takes you, there will always be a reason to hope, smile, and begin again.
+                </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+            <button class="close" type="button">
+              <span class="btn-content"><i class="fa-solid fa-rotate-right"></i><span>Ask Again</span></span>
+            </button>
+          </section>
+        </div>
+      `, () => {
+        const close = app.querySelector(".close");
+        close.addEventListener("click", showLove);
+        initLettersSection();
+
+        ["fa-heart", "fa-star", "fa-circle"].forEach((iconClass) => {
+          for (let i = 0; i < 7; i++) {
+            const heart = document.createElement("i");
+            heart.className = `heart fa-solid ${iconClass}`;
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.fontSize = `${12 + Math.random() * 14}px`;
+            heart.style.animationDuration = `${4 + Math.random() * 6}s`;
+            heart.style.animationDelay = `${-Math.random() * 8}s`;
+            app.appendChild(heart);
+          }
+        });
+      });
+    }
+
+    showNamePrompt();
   </script>
 </body>
 </html>
